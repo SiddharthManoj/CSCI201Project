@@ -1,15 +1,21 @@
 package client;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,10 +31,22 @@ public class LoginPanel extends JPanel implements ActionListener {
 	private JPasswordField password = new JPasswordField();
 	private JButton submit = new JButton("Submit");
 	private JButton register = new JButton("Register");
+	private Image backgroundImage;
 	
 	public LoginPanel() {
+		
+		this.setBackground(Color.BLACK);
+		
+		try {
+			backgroundImage = ImageIO.read(new File("./resources/win.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		GridBagConstraints c = new GridBagConstraints();
 		this.setLayout(new GridBagLayout());
+
 		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 0.0;
@@ -38,6 +56,7 @@ public class LoginPanel extends JPanel implements ActionListener {
 		c.gridy = 0;
 		c.weightx = 1.0;
 		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
 		this.add(this.username, c);
 		c.gridx = 0;
 		c.gridy = 1;
@@ -46,6 +65,7 @@ public class LoginPanel extends JPanel implements ActionListener {
 		c.gridx = 1;
 		c.gridy = 1;
 		c.weightx = 1.0;
+		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		this.add(this.password, c);
 		c.gridx = 0;
@@ -64,6 +84,7 @@ public class LoginPanel extends JPanel implements ActionListener {
 		this.submit.addActionListener(this);
 		this.register.setActionCommand("register");
 		this.register.addActionListener(this);
+		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -123,5 +144,13 @@ public class LoginPanel extends JPanel implements ActionListener {
 		parent.add(new RegisterPanel());
 		parent.validate();
 		parent.repaint();
+	}
+	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		// int something = this.get
+		int width = this.getWidth();
+		int height = this.getHeight();
+		g.drawImage(backgroundImage, 0, 0, width, height, this);
 	}
 }

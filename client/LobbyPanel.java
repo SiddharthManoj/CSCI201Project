@@ -1,7 +1,5 @@
 package client;
 import game.Game;
-import game.MenuScreen;
-import game2.GamePanel;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -15,7 +13,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,7 +33,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.basic.BasicArrowButton;
 
 
-public class LobbyPanel extends JPanel implements ActionListener, ListSelectionListener{
+public class LobbyPanel extends JPanel implements ActionListener, ListSelectionListener, Runnable{
 	private static final long serialVersionUID = -8069773572372219648L;
 	private String un;
 	//Messenger recipient.
@@ -57,10 +54,26 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	private JButton addFriend = new JButton("Add Friend");
 	private JLabel balanceLabel = new JLabel("");
 	private double balance = -1;
+	private Socket s;
+	private PrintWriter pwr;
+	private BufferedReader br;
 	public LobbyPanel(String un) {
-		this.un = un;
-		setupGUI();
-		addEventHandler();
+		try {
+			s = new Socket("localhost",3001);
+			this.un = un;
+			pwr = new PrintWriter(s.getOutputStream());
+			pwr.println(this.un);
+			pwr.flush();
+			br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			setupGUI();
+			System.out.println("Finished GUI");
+			addEventHandler();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private void setupGUI(){
@@ -79,7 +92,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		northContainer.add(balanceLabel);
 		north.add(northContainer);
 		this.add(north, BorderLayout.NORTH);
-		
+		System.out.println("Finished North");
 		//eastMessagePanel is for messages.
 		this.eastMessagePanel.add(bb, BorderLayout.NORTH);
 		this.log.setEditable(false);
@@ -91,12 +104,12 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		this.eastMessagePanel.add(southMessagePanel, BorderLayout.SOUTH);
 		this.east.setBorder(new EmptyBorder(10,10,10,10));
 		JScrollPane scrollPane = new JScrollPane(friendList);
-		
+		System.out.println("Finished South");
 		this.east.add(scrollPane, BorderLayout.CENTER);
 		this.east.add(logout, BorderLayout.NORTH);
 		this.east.add(addFriend, BorderLayout.SOUTH);
 		this.add(this.east, BorderLayout.EAST);
-		
+		System.out.println("Finished East");
 		
 		JPanel center = new JPanel();
 		ImageIcon cow = new ImageIcon("./data/Cow.png");
@@ -105,13 +118,14 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		center.add(cowLabel);
 		this.add(center, BorderLayout.CENTER);
 		populateFriendList();
-		Timer timer = new Timer();
+
+		new Thread(this).start();
+		/*Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 	        public void run() {
 	        	populateFriendList();
-				acceptMessage();
 	        }
-	    }, 3000, 3000);
+	    }, 3000, 3000);*/
 	}
 	
 	private void addEventHandler(){
@@ -172,16 +186,15 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	
 	private void populateFriendList(){
 		try {
-			Socket s = new Socket("localhost", 3001);
-			PrintWriter pwr = new PrintWriter(s.getOutputStream());
-			pwr.println("populate");
-			pwr.println(this.un);
+			pwr.println("Populate");
 			pwr.flush();
 			//friendList.setText("");
-			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			ArrayList<String>friendListList = new ArrayList<String>();
+			System.out.println("Getting Line");
 			String line = br.readLine();
+			System.out.println("Got line: " + line);
 			while (!line.equals("break-list")){
+				System.out.println("not break");
 				boolean online = Boolean.parseBoolean(line);
 				String name = br.readLine();
 				String content = "";
@@ -206,37 +219,22 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		}
 	}
 	private void logout(){
-		try {
-			Socket s = new Socket("localhost", 3001);
-			PrintWriter pwr = new PrintWriter(s.getOutputStream());
-			pwr.println("Logout");
-			pwr.println(this.un);
-			pwr.flush();
-			//Need some help redirecting to login.
-			Container parent = this.getParent();
-			parent.remove(this);
-			parent.add(new LoginPanel());
-			parent.validate();
-			parent.repaint();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		pwr.println("Logout");
+		pwr.flush();
+		//Need some help redirecting to login.
+		Container parent = this.getParent();
+		parent.remove(this);
+		parent.add(new LoginPanel());
+		parent.validate();
+		parent.repaint();
 	}
 	
 	private void addFriend(String friend){
 		try{
-			Socket s = new Socket("localhost", 3001);
-			PrintWriter pwr = new PrintWriter(s.getOutputStream());
 			pwr.println("AddFriend");
-			pwr.println(this.un);
 			pwr.println(friend);
 			pwr.flush();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			String message = br.readLine();
 			JOptionPane.showMessageDialog(this, message);
 		} catch (UnknownHostException e) {
@@ -249,45 +247,24 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	}
 	
 	private void sendMessage(String message){
-		try{
-			Socket s = new Socket("localhost", 3001);
-			PrintWriter pwr = new PrintWriter(s.getOutputStream());
-			pwr.println("Chat");
-			pwr.println(this.un);
-			pwr.println(this.recipient);
-			pwr.println(this.un + ": " + message);
-			pwr.flush();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-			System.exit(1);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		pwr.println("Chat");
+		pwr.println(this.recipient);
+		pwr.println(this.un + ": " + message);
+		pwr.flush();
+		
 	}
 	
 	private void acceptMessage(){
 		try{
-			Socket s = new Socket("localhost", 3001);
-			Scanner scan = new Scanner(s.getInputStream());
-			System.out.println("Scanner ready: " + scan.hasNext());
-			if (scan.hasNext()){
-				String recipient = scan.nextLine();
-				if (recipient != null){
-					if (recipient.equals(this.un)){
-						log.append(scan.nextLine());
-						scan.close();
-						return;
-					}
-					else{
-						scan.close();
-						return;
-					}
-				}
-				else{
-					scan.close();
-					return;
-				}
+			String recipient = br.readLine();
+			System.out.println(recipient);
+			if (recipient.equals(this.un)){
+				System.out.println("This");
+				log.append(br.readLine() + "\n");
+				return;
+			}
+			else{
+				return;
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -297,15 +274,10 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	}
 	
 	private void getBalance(){
-		Socket s;
 		try {
-			s = new Socket("localhost", 3001);
-			PrintWriter pwr = new PrintWriter(s.getOutputStream());
 			pwr.println("Balance");
-			pwr.println(this.un);
 			pwr.flush();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			double balance = Double.parseDouble(br.readLine());
 			this.balance = balance;
 		} catch (UnknownHostException e) {
@@ -322,11 +294,17 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	private void joinGame(){
 		Container parent = this.getParent();
 		parent.remove(this);
-		//parent.add(new MenuScreen(un, balance));
 		String[] arguments = new String[] {"123"};
 	    Game.main(arguments);
 		parent.validate();
 		parent.repaint();
+	}
+
+	public void run() {
+		while(true){
+			acceptMessage();
+			//populateFriendList();
+		}
 	}
 
 

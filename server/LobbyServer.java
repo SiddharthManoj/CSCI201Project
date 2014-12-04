@@ -12,19 +12,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import client.LobbyThread;
+
 public class LobbyServer extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JPanel main;
 	private JTextArea serverView;
-	private Connection c;
+	private Connection c; 
+	private Vector<LobbyThread> ltVector = new Vector<LobbyThread>();
+	
 	public static ArrayList <String> friends = new ArrayList <String>();
 	public static ArrayList <Boolean> onlineornot = new ArrayList <Boolean>();
+	
 	int counter = 0;
 	public LobbyServer() {
 		super ("Lobby Server");
@@ -36,72 +42,14 @@ public class LobbyServer extends JFrame{
 		try{
 			@SuppressWarnings("resource")
 			ServerSocket ss = new ServerSocket(3001);
-			c = DriverManager.getConnection("jdbc:mysql://localhost/CardShark", "root", "");
+			c = DriverManager.getConnection("jdbc:mysql://localhost/CardShark", "root", "3Rdplacespel");
 		
 			while (true) {
 				Socket s = ss.accept();
-				serverView.append("hi");
-				BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));	
-				String type = br.readLine();
-				String username = br.readLine();
-				
-				if (type.equals("Logout")){
-					serverView.append("Logging out " + username + "\n");
-					logout(username);
-				}
-				else if(type.equals("populate")){
-					counter++;
-					serverView.append("Populating friends list.... "  + counter + "\n");
-					PrintWriter pwr = new PrintWriter(s.getOutputStream());
-					ArrayList <String> tempfriends = new ArrayList <String>();
-					ArrayList <Boolean> tempcheckonline= new ArrayList <Boolean>();
-					tempfriends = findFriends(username);
-					tempcheckonline = checkOnline(tempfriends);
-					for(int x = 0; x< tempfriends.size(); x++){
-						pwr.println(tempcheckonline.get(x));
-						serverView.append(tempcheckonline.get(x) + " \n" );
-						pwr.println(tempfriends.get(x));		
-						pwr.flush();
-					}
-					pwr.println("break-list");
-					pwr.flush();
-		
-				}
-				else if (type.equals("AddFriend")){
-					String friend = br.readLine();
-					PrintWriter pwr = new PrintWriter(s.getOutputStream());
-					pwr.println(addFriend(username, friend));
-					pwr.flush();
-					ArrayList <String> tempfriends = new ArrayList <String>();
-					ArrayList <Boolean> tempcheckonline= new ArrayList <Boolean>();
-					tempfriends = findFriends(username);
-					tempcheckonline = checkOnline(tempfriends);
-					for(int x = 0; x< tempfriends.size(); x++){
-						pwr.println(tempcheckonline.get(x));
-						pwr.println(tempfriends.get(x));		
-						pwr.flush();
-					}
-					pwr.println("break-list");
-					pwr.flush();
-				}
-				else if (type.equals("Balance")){
-					PrintWriter pwr = new PrintWriter(s.getOutputStream());
-					pwr.println(getBalance(username));
-					pwr.flush();
-				}
-				else if (type.equals("Chat")){
-					
-					String recipient = br.readLine();
-					String message = br.readLine();
-					PrintWriter pwr = new PrintWriter(s.getOutputStream());
-					pwr.println(recipient);
-					pwr.println(message);
-					pwr.flush();
-				}
-				else {
-					System.out.println("What is " + type + "?");
-					System.exit(1);
-				}
+				System.out.println("Accepting a connection!");
+				LobbyThread lt = new LobbyThread(s, this);
+				ltVector.add(lt);
+				lt.start();
 			}
 			
 		} catch(IOException ioe){
@@ -112,7 +60,9 @@ public class LobbyServer extends JFrame{
 			System.exit(1);
 		}
 	}
-	private ArrayList <Boolean> checkOnline(ArrayList <String> names){
+	
+	
+	public ArrayList <Boolean> checkOnline(ArrayList <String> names){
 		onlineornot.clear();
 		for(int x = 0; x< names.size(); x++){
 			PreparedStatement select_user_query;
@@ -134,7 +84,7 @@ public class LobbyServer extends JFrame{
 		}
 		return onlineornot;
 	}
-	private ArrayList <String> findFriends(String username){
+	public ArrayList <String> findFriends(String username){
 		friends.clear();
 		try {
 			PreparedStatement select_user_query;
@@ -164,8 +114,8 @@ public class LobbyServer extends JFrame{
 		return friends;
 		
 	}
-	private void logout(String username){
-		
+	
+	public void logout(String username){
 		try {
 			PreparedStatement query = c.prepareStatement("UPDATE user SET ready_to_play=false WHERE username = ?");
 			query.setString(1, username);
@@ -179,7 +129,7 @@ public class LobbyServer extends JFrame{
 		
 	}
 	
-	private double getBalance(String username){
+	public double getBalance(String username){
 		try{
 			PreparedStatement query = c.prepareStatement("SELECT currency FROM user WHERE username = ?");
 			query.setString(1, username);
@@ -194,7 +144,11 @@ public class LobbyServer extends JFrame{
 		}
 	}
 	
-	private String addFriend(String un, String friend){
+	public void removeLobbyThread(LobbyThread lt){
+		ltVector.remove(lt);
+	}
+	
+	public String addFriend(String un, String friend){
 		try{
 			PreparedStatement select_user_query = c.prepareStatement("SELECT uid FROM user WHERE username = ?");
 			//Get the UID
@@ -232,6 +186,12 @@ public class LobbyServer extends JFrame{
 			System.exit(1);
 		}
 		return "";
+	}
+	
+	public void sendMessage(String recipient, String message){
+		for (int i = 0; i <ltVector.size(); i++){
+			ltVector.get(i).send(recipient, message);
+		}
 	}
 	
 	private void setupGUI(){

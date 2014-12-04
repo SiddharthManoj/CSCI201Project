@@ -22,7 +22,7 @@ public class ChatServer {
 				System.out.println("Connection from " + s.getInetAddress());
 				ChatThread ct = new ChatThread(s, this);
 				ctVector.add(ct);
-				//ct.start();
+				ct.start();
 			}
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
