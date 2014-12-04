@@ -1,0 +1,122 @@
+commit f69327fc91cac829b0e8709b681fce31071d9b57
+Author: Benjamin Schoen <benjaminschoen@schoenrbaumimac.attlocal.net>
+Date:   Mon Nov 24 21:55:34 2014 -0600
+
+    Remove class files
+
+commit 00ca8283cca7638572d032c6c22bc6fb7469c027
+Author: Benjamin Schoen <benjaminschoen@schoenrbaumimac.attlocal.net>
+Date:   Mon Nov 24 19:56:52 2014 -0600
+
+    Initial poker library
+
+commit 06e7583d06d395e0f24fa8209c1fe2f4beb2c2f3
+Merge: d01455b d5b32a9
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Mon Nov 24 17:31:37 2014 -0800
+
+    Merge pull request #4 from william-alexander/master
+    
+    Add login GUI
+
+commit d5b32a9a8a2d8de8e4ed3535c89363e317cf0632
+Author: William Alexander <github.com@willalexander.me>
+Date:   Mon Nov 24 15:58:52 2014 -0800
+
+    Add login GUI
+
+commit d01455b26cd95217875f2bf0430f64c02ec0773f
+Merge: d67771a 8855280
+Author: Sayantan Chakraborty <sayantac@usc.edu>
+Date:   Fri Nov 21 15:47:38 2014 -0800
+
+    Merge pull request #3 from sayantanc/master
+    
+    Added our Game Name
+
+commit 885528097dd26c5f2df90e889499e3d0002a0bce
+Author: Sayantan Chakraborty <sayantac@usc.edu>
+Date:   Fri Nov 21 15:46:53 2014 -0800
+
+    Added our Game Name
+
+commit d67771a7df6cf7358d5f4f20a2a6342a2c3c62f8
+Merge: 640d863 56b955c
+Author: Sayantan Chakraborty <sayantac@usc.edu>
+Date:   Fri Nov 21 15:41:00 2014 -0800
+
+    Merge pull request #2 from william-alexander/master
+    
+    Move size setting to constructor
+
+commit 56b955c5cae8a157bce7453ed5ab5fafdd03037c
+Author: William Alexander <github.com@willalexander.me>
+Date:   Fri Nov 21 15:39:55 2014 -0800
+
+    Move size setting to constructor
+
+commit 640d863b69e92cd9f73a41b1963b90a76f8ad989
+Author: Sayantan Chakraborty <sayantac@usc.edu>
+Date:   Fri Nov 21 15:21:38 2014 -0800
+
+    Fixed Formatting
+
+commit 2dcb65d0dbe5131bcf3ec72f14b26ebf1285cef1
+Author: Sayantan Chakraborty <sayantac@usc.edu>
+Date:   Fri Nov 21 15:20:47 2014 -0800
+
+    Created Readme.MD
+
+commit 78126b88c5f1e4cc45f09cd953db9399aa7c552b
+Author: Sayantan Chakraborty <sayantac@usc.edu>
+Date:   Fri Nov 21 15:19:38 2014 -0800
+
+    Delete README.md
+
+commit 63653be31857f0b661f965fe75bf0c1903e84e00
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Fri Nov 21 14:05:24 2014 -0800
+
+    CardShark is in the menubar
+
+commit 857a5368385855285994af2a071284c1ca1dcaa0
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Fri Nov 21 14:00:51 2014 -0800
+
+    Added the CardShark
+
+commit 49ab83392db592fddc7cc24188cb743eb906a4d1
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Fri Nov 21 14:00:37 2014 -0800
+
+    GUI work
+
+commit 9e93a299e2250170ac22de28dea7f631bf8bce0f
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Fri Nov 21 13:28:50 2014 -0800
+
+    More GUI work
+
+commit 70d28383f691e8301b18d4a2998e0f2a0d0562c7
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Thu Nov 20 23:12:05 2014 -0800
+
+    Edited .project file to include Java
+
+commit 0e4dd0968ac539001e54b4d91e3ec2bdc379dad0
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Thu Nov 20 23:11:43 2014 -0800
+
+    Made it a Java project for Eclipse. Started work on GUI
+
+commit 0a79dbbc85d7fe53581dd75ce479b7ebb3a0229f
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Wed Oct 29 12:30:26 2014 -0700
+
+    Created .project for Eclipse
+
+commit ca2ca8c5173d18d4d8f8a2f0cbdd3170e944e5ea
+Author: Garrett Oldani <oldani@usc.edu>
+Date:   Thu Oct 9 17:13:47 2014 -0700
+
+    Add readme
