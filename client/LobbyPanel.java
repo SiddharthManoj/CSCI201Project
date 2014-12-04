@@ -2,11 +2,15 @@ package client;
 import game.Game;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -16,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -55,11 +60,12 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	private JLabel balanceLabel = new JLabel("");
 	private double balance = -1;
 	private Socket s;
+	//private Image backgroundImage;
 	private PrintWriter pwr;
 	private BufferedReader br;
 	public LobbyPanel(String un) {
 		try {
-			s = new Socket("localhost",3001);
+			s = new Socket("10.0.1.4",3001);
 			this.un = un;
 			pwr = new PrintWriter(s.getOutputStream());
 			pwr.println(this.un);
@@ -78,6 +84,8 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 	
 	private void setupGUI(){
 		this.setLayout(new BorderLayout());
+		//JLabel background=new JLabel(new ImageIcon("./resources/ssHero.png"));
+		//this.add(background, BorderLayout.CENTER);
 		this.add(join, BorderLayout.WEST);
 		this.title = new JLabel("Welcome, " + this.un, JLabel.CENTER);
 		this.title.setVerticalAlignment(SwingConstants.TOP);
@@ -87,7 +95,8 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		northContainer.setLayout(new BoxLayout(northContainer, BoxLayout.Y_AXIS));
 		northContainer.add(title);
 		getBalance();
-		this.balanceLabel.setText("Your current balance: $" + this.balance);
+		
+		//this.balanceLabel.setText("Your current balance: $" + this.balance);
 		this.balanceLabel.setFont(new Font("Serif", Font.BOLD, 20));
 		northContainer.add(balanceLabel);
 		north.add(northContainer);
@@ -96,6 +105,7 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		//eastMessagePanel is for messages.
 		this.eastMessagePanel.add(bb, BorderLayout.NORTH);
 		this.log.setEditable(false);
+		
 		this.log.setLineWrap(true);
 		this.eastMessagePanel.add(new JScrollPane(this.log), BorderLayout.CENTER);
 		JPanel southMessagePanel = new JPanel(new BorderLayout());
@@ -110,15 +120,14 @@ public class LobbyPanel extends JPanel implements ActionListener, ListSelectionL
 		this.east.add(addFriend, BorderLayout.SOUTH);
 		this.add(this.east, BorderLayout.EAST);
 		System.out.println("Finished East");
-		
 		JPanel center = new JPanel();
-		ImageIcon cow = new ImageIcon("./data/Cow.png");
+		ImageIcon cow = new ImageIcon("./resources/ssHeroPixel.png");
 		JLabel cowLabel = new JLabel();
 		cowLabel.setIcon(cow);
 		center.add(cowLabel);
 		this.add(center, BorderLayout.CENTER);
 		populateFriendList();
-
+		
 		new Thread(this).start();
 		/*Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {

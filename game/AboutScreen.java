@@ -42,9 +42,9 @@ public class AboutScreen extends LevelScreen implements ActionListener {
 
 		// set the about text
 		String text = "<html><center>Created By "
-				+ "Cheng Zhang, "
-				+ "Richard Jiang, and "
-				+ "<br>Siddharth Manoj<br>"
+				+ "Siddharth Manoj, Sayantan Chakraborty, Eugene Laksana "
+				+ "William Alexander, Ben Schoen "
+				+ "<br>and Garrett Oldani<br>"
 				+ "<br>We do not own the music and sprites used in this<br> game. "
 				+ "All music is used for non-commercial purposes <br>"
 				+ "and not for profit as it is used for educational <br>"

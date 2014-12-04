@@ -137,7 +137,7 @@ public class RegisterPanel extends JPanel implements ActionListener {
 	
 	private boolean addUser(String firstName, String lastName, String un, String password, String email){
 		try{
-			Socket s = new Socket("localhost", 60500);
+			Socket s = new Socket("10.0.1.4", 60500);
 			PrintWriter pwr = new PrintWriter(s.getOutputStream());
 			pwr.println("Register");
 			pwr.println(firstName);

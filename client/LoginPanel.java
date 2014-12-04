@@ -51,7 +51,9 @@ public class LoginPanel extends JPanel implements ActionListener {
 		c.gridy = 0;
 		c.weightx = 0.0;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		this.add(new JLabel("Username   ", SwingConstants.RIGHT), c);
+		JLabel user = new JLabel("Username   ", SwingConstants.RIGHT);
+		user.setForeground(Color.WHITE);
+		this.add(user, c);
 		c.gridx = 1;
 		c.gridy = 0;
 		c.weightx = 1.0;
@@ -61,7 +63,9 @@ public class LoginPanel extends JPanel implements ActionListener {
 		c.gridx = 0;
 		c.gridy = 1;
 		c.weightx = 0.0;
-		this.add(new JLabel("Password   ", SwingConstants.RIGHT), c);
+		JLabel pass = new JLabel("Password   ", SwingConstants.RIGHT);
+		pass.setForeground(Color.WHITE);
+		this.add(pass, c);
 		c.gridx = 1;
 		c.gridy = 1;
 		c.weightx = 1.0;
@@ -116,7 +120,7 @@ public class LoginPanel extends JPanel implements ActionListener {
 	
 	private boolean checkLogin(String uid, String pw) {
 		try {
-			Socket s = new Socket("localhost", 60500);
+			Socket s = new Socket("10.0.1.4", 60500);
 			
 			// Sending the username and password to the server
 			PrintWriter pwr = new PrintWriter(s.getOutputStream());
